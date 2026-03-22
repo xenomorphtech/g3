@@ -7,11 +7,19 @@
 # General application configuration
 import Config
 
+tracker_model_client =
+  case System.get_env("G3_MODEL_PROVIDER", "gemini") do
+    "openrouter" -> G3.AI.OpenRouterClient
+    _ -> G3.AI.GeminiClient
+  end
+
 config :g3,
   generators: [timestamp_type: :utc_datetime]
 
 config :g3, :gemini_config_path, Path.expand("../.local/gemini.json", __DIR__)
-config :g3, :tracker_model_client, G3.AI.GeminiClient
+config :g3, :openrouter_config_path, Path.expand("../.local/openrouter.json", __DIR__)
+config :g3, :tracker_model_client, tracker_model_client
+config :g3, :external_eval_model_client, tracker_model_client
 
 config :g3, G3.Tracker.Workspace, path: Path.expand("../.local/tracker_state.json", __DIR__)
 

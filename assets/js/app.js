@@ -43,11 +43,179 @@ const SubmitOnCtrlEnter = {
   },
 }
 
+const ClearOnSubmit = {
+  mounted() {
+    this.handleSubmit = () => {
+      window.requestAnimationFrame(() => {
+        const composer = this.el.querySelector("#chat_message")
+        if (!composer) return
+
+        composer.value = ""
+        composer.dispatchEvent(new Event("input", {bubbles: true}))
+      })
+    }
+
+    this.el.addEventListener("submit", this.handleSubmit)
+  },
+
+  destroyed() {
+    this.el.removeEventListener("submit", this.handleSubmit)
+  },
+}
+
+const PreventInitialFocus = {
+  mounted() {
+    this.focusGuardActive = true
+    this.guardTimers = []
+
+    this.preventFocus = () => {
+      if (!this.focusGuardActive) return
+
+      const active = document.activeElement
+      if (!active || active === document.body || !this.el.contains(active)) return
+
+      if (active.matches("input, textarea, select, button, [tabindex]")) {
+        active.blur()
+      }
+    }
+
+    this.disarmFocusGuard = () => {
+      if (!this.focusGuardActive) return
+
+      this.focusGuardActive = false
+      this.guardTimers.forEach(timer => window.clearTimeout(timer))
+      this.guardTimers = []
+    }
+
+    this.handlePageShow = () => this.preventFocus()
+    this.handleUserIntent = () => this.disarmFocusGuard()
+
+    ;[0, 50, 150, 300, 500].forEach(delay => {
+      this.guardTimers.push(window.setTimeout(() => this.preventFocus(), delay))
+    })
+
+    window.addEventListener("pageshow", this.handlePageShow)
+    window.addEventListener("pointerdown", this.handleUserIntent, true)
+    window.addEventListener("keydown", this.handleUserIntent, true)
+  },
+
+  updated() {
+    this.preventFocus()
+  },
+
+  destroyed() {
+    this.disarmFocusGuard()
+    window.removeEventListener("pageshow", this.handlePageShow)
+    window.removeEventListener("pointerdown", this.handleUserIntent, true)
+    window.removeEventListener("keydown", this.handleUserIntent, true)
+  },
+}
+
+const GoalsSorter = {
+  mounted() {
+    this.draggedId = null
+    this.dropTargetId = null
+    this.dropPosition = "after"
+
+    this.clearDropState = () => {
+      this.el.querySelectorAll("[data-goal-id]").forEach(card => {
+        card.classList.remove("opacity-60", "ring-4", "ring-slate-200", "border-sky-400", "border-slate-300")
+      })
+    }
+
+    this.findCard = (event) => event.target.closest("[data-goal-id]")
+
+    this.handleDragStart = (event) => {
+      const card = this.findCard(event)
+      if (!card) return
+
+      this.draggedId = card.dataset.goalId
+      this.dropTargetId = null
+      this.clearDropState()
+      card.classList.add("opacity-60", "ring-4", "ring-slate-200")
+
+      if (event.dataTransfer) {
+        event.dataTransfer.effectAllowed = "move"
+        event.dataTransfer.setData("text/plain", this.draggedId)
+      }
+    }
+
+    this.handleDragOver = (event) => {
+      const card = this.findCard(event)
+      if (!card || !this.draggedId || card.dataset.goalId === this.draggedId) return
+
+      event.preventDefault()
+
+      const rect = card.getBoundingClientRect()
+      const beforeMidpoint = event.clientY < rect.top + rect.height / 2
+
+      this.dropTargetId = card.dataset.goalId
+      this.dropPosition = beforeMidpoint ? "before" : "after"
+
+      this.clearDropState()
+
+      const draggedCard = this.el.querySelector(`[data-goal-id="${this.draggedId}"]`)
+      if (draggedCard) draggedCard.classList.add("opacity-60", "ring-4", "ring-slate-200")
+
+      card.classList.add(beforeMidpoint ? "border-sky-400" : "border-slate-300")
+
+      if (event.dataTransfer) event.dataTransfer.dropEffect = "move"
+    }
+
+    this.handleDrop = (event) => {
+      const card = this.findCard(event)
+      if (!card || !this.draggedId) return
+
+      event.preventDefault()
+
+      const orderedIds = Array.from(this.el.querySelectorAll("[data-goal-id]")).map(
+        item => item.dataset.goalId
+      )
+
+      const draggedIndex = orderedIds.indexOf(this.draggedId)
+      const targetIndex = orderedIds.indexOf(card.dataset.goalId)
+
+      if (draggedIndex < 0 || targetIndex < 0 || draggedIndex === targetIndex) {
+        this.handleDragEnd()
+        return
+      }
+
+      const nextIds = orderedIds.filter(id => id !== this.draggedId)
+      const insertionIndex =
+        this.dropPosition === "before"
+          ? targetIndex - (draggedIndex < targetIndex ? 1 : 0)
+          : targetIndex + (draggedIndex < targetIndex ? 0 : 1)
+
+      nextIds.splice(insertionIndex, 0, this.draggedId)
+      this.pushEvent("reorder_goals", {ids: nextIds})
+      this.handleDragEnd()
+    }
+
+    this.handleDragEnd = () => {
+      this.draggedId = null
+      this.dropTargetId = null
+      this.clearDropState()
+    }
+
+    this.el.addEventListener("dragstart", this.handleDragStart)
+    this.el.addEventListener("dragover", this.handleDragOver)
+    this.el.addEventListener("drop", this.handleDrop)
+    this.el.addEventListener("dragend", this.handleDragEnd)
+  },
+
+  destroyed() {
+    this.el.removeEventListener("dragstart", this.handleDragStart)
+    this.el.removeEventListener("dragover", this.handleDragOver)
+    this.el.removeEventListener("drop", this.handleDrop)
+    this.el.removeEventListener("dragend", this.handleDragEnd)
+  },
+}
+
 const csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 const liveSocket = new LiveSocket("/live", Socket, {
   longPollFallbackMs: 2500,
   params: {_csrf_token: csrfToken},
-  hooks: {...colocatedHooks, SubmitOnCtrlEnter},
+  hooks: {...colocatedHooks, SubmitOnCtrlEnter, ClearOnSubmit, PreventInitialFocus, GoalsSorter},
 })
 
 // Show progress bar on live navigation and form submits

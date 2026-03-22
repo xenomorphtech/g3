@@ -1,0 +1,4 @@
+[workspace]
+members = ["g3_core", "g3_backend", "g3_gui"]
+resolver = "2"
+

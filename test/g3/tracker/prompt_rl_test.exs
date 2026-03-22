@@ -34,7 +34,8 @@ defmodule G3.Tracker.PromptRLTest do
                    Assistant.respond(turn.user_message,
                      workspace: workspace,
                      client: client,
-                     history: history
+                     history: history,
+                     focus_object: Map.get(turn, :focus_object)
                    )
 
           assert_turn_result(result, turn.expected)
@@ -53,12 +54,35 @@ defmodule G3.Tracker.PromptRLTest do
       assert result.message =~ expected_text
     end)
 
+    Enum.each(Map.get(expected, :message_must_not_include, []), fn forbidden_text ->
+      refute String.contains?(String.downcase(result.message), String.downcase(forbidden_text))
+    end)
+
     action_tools = Enum.map(result.actions, & &1["tool"])
     assert action_tools == expected.action_tools
     refute Enum.any?(expected.forbidden_action_tools, &(&1 in action_tools))
 
     assert length(result.snapshot["goals"]) == expected.goals_count
     assert length(result.snapshot["tasks"]) == expected.tasks_count
+    assert length(result.snapshot["facts"]) == Map.get(expected, :facts_count, 0)
+
+    case Map.get(expected, :goal_titles) do
+      nil ->
+        :ok
+
+      titles ->
+        actual_titles = Enum.map(result.snapshot["goals"], & &1["title"])
+        Enum.each(titles, &assert(&1 in actual_titles))
+    end
+
+    case Map.get(expected, :task_titles) do
+      nil ->
+        :ok
+
+      titles ->
+        actual_titles = Enum.map(result.snapshot["tasks"], & &1["title"])
+        Enum.each(titles, &assert(&1 in actual_titles))
+    end
 
     case expected.active_draft_kind do
       nil ->
@@ -85,6 +109,15 @@ defmodule G3.Tracker.PromptRLTest do
       task_fields ->
         assert [%{} = saved_task | _] = result.snapshot["tasks"]
         assert_subset(saved_task, task_fields)
+    end
+
+    case Map.get(expected, :saved_fact_fields) do
+      nil ->
+        :ok
+
+      fact_fields ->
+        assert [%{} = saved_fact | _] = result.snapshot["facts"]
+        assert_subset(saved_fact, fact_fields)
     end
   end
 

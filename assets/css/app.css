@@ -22,30 +22,30 @@
   We ship with two themes, a light one inspired on Phoenix colors and a dark one inspired
   on Elixir colors. Build your own at: https://daisyui.com/theme-generator/ */
 @plugin "../vendor/daisyui-theme" {
-  name: "dark";
-  default: false;
+  name: "cyberpunk-emerald";
+  default: true;
   prefersdark: true;
   color-scheme: "dark";
-  --color-base-100: oklch(30.33% 0.016 252.42);
-  --color-base-200: oklch(25.26% 0.014 253.1);
-  --color-base-300: oklch(20.15% 0.012 254.09);
-  --color-base-content: oklch(97.807% 0.029 256.847);
-  --color-primary: oklch(58% 0.233 277.117);
-  --color-primary-content: oklch(96% 0.018 272.314);
-  --color-secondary: oklch(58% 0.233 277.117);
-  --color-secondary-content: oklch(96% 0.018 272.314);
-  --color-accent: oklch(60% 0.25 292.717);
-  --color-accent-content: oklch(96% 0.016 293.756);
-  --color-neutral: oklch(37% 0.044 257.287);
-  --color-neutral-content: oklch(98% 0.003 247.858);
-  --color-info: oklch(58% 0.158 241.966);
-  --color-info-content: oklch(97% 0.013 236.62);
-  --color-success: oklch(60% 0.118 184.704);
-  --color-success-content: oklch(98% 0.014 180.72);
-  --color-warning: oklch(66% 0.179 58.318);
-  --color-warning-content: oklch(98% 0.022 95.277);
-  --color-error: oklch(58% 0.253 17.585);
-  --color-error-content: oklch(96% 0.015 12.422);
+  --color-base-100: #0a120e;
+  --color-base-200: #13201a;
+  --color-base-300: #183127;
+  --color-base-content: #ecfdf5;
+  --color-primary: #10b981;
+  --color-primary-content: #0a120e;
+  --color-secondary: #34d399;
+  --color-secondary-content: #0a120e;
+  --color-accent: #6ee7b7;
+  --color-accent-content: #0a120e;
+  --color-neutral: #0f1a15;
+  --color-neutral-content: #d1fae5;
+  --color-info: #2dd4bf;
+  --color-info-content: #0a120e;
+  --color-success: #10b981;
+  --color-success-content: #0a120e;
+  --color-warning: #f59e0b;
+  --color-warning-content: #0a120e;
+  --color-error: #fb7185;
+  --color-error-content: #0a120e;
   --radius-selector: 0.25rem;
   --radius-field: 0.25rem;
   --radius-box: 0.5rem;
@@ -58,7 +58,7 @@
 
 @plugin "../vendor/daisyui-theme" {
   name: "light";
-  default: true;
+  default: false;
   prefersdark: false;
   color-scheme: "light";
   --color-base-100: oklch(98% 0 0);
@@ -97,7 +97,7 @@
 @custom-variant phx-change-loading (.phx-change-loading&, .phx-change-loading &);
 
 /* Use the data attribute for dark mode  */
-@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+@custom-variant dark (&:where([data-theme=cyberpunk-emerald], [data-theme=cyberpunk-emerald] *));
 
 /* Make LiveView wrapper divs transparent for layout */
 [data-phx-session], [data-phx-teleported-src] { display: contents }
@@ -105,17 +105,18 @@
 /* This file is for your main application CSS */
 
 :root {
-  color-scheme: light;
-  --tracker-bg: linear-gradient(180deg, #fff8f4 0%, #fff3ed 46%, #eef5ff 100%);
-  --tracker-panel: rgba(255, 255, 255, 0.8);
-  --tracker-border: rgba(255, 255, 255, 0.7);
-  --tracker-shadow: 0 24px 80px rgba(15, 23, 42, 0.12);
+  color-scheme: dark;
+  --tracker-bg: linear-gradient(180deg, #08100c 0%, #0a120e 46%, #101b15 100%);
+  --tracker-panel: rgba(19, 32, 26, 0.82);
+  --tracker-border: rgba(16, 185, 129, 0.2);
+  --tracker-shadow: 0 28px 88px rgba(3, 9, 6, 0.62);
   --tracker-heading: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
   --tracker-body: "Avenir Next", "Segoe UI", "Helvetica Neue", sans-serif;
 }
 
 body {
   background: var(--tracker-bg);
+  color: #e2e8f0;
   font-family: var(--tracker-body);
 }
 
@@ -128,17 +129,6 @@ body {
   overflow: hidden;
 }
 
-.tracker-shell::after {
-  content: "";
-  position: fixed;
-  inset: auto -12rem -14rem auto;
-  width: 28rem;
-  height: 28rem;
-  border-radius: 9999px;
-  background: radial-gradient(circle, rgba(56, 189, 248, 0.18) 0%, rgba(56, 189, 248, 0) 72%);
-  pointer-events: none;
-}
-
 .tracker-logo {
   display: inline-flex;
   align-items: center;
@@ -147,11 +137,11 @@ body {
   height: 2.75rem;
   border-radius: 1rem;
   background:
-    linear-gradient(135deg, rgba(12, 74, 110, 0.96), rgba(249, 115, 22, 0.92)),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0));
+    linear-gradient(135deg, rgba(6, 78, 59, 0.96), rgba(16, 185, 129, 0.84)),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0));
   box-shadow:
-    0 22px 40px rgba(12, 74, 110, 0.2),
-    inset 0 1px 1px rgba(255, 255, 255, 0.3);
+    0 22px 44px rgba(16, 185, 129, 0.18),
+    inset 0 1px 1px rgba(255, 255, 255, 0.16);
 }
 
 .tracker-panel {
@@ -168,17 +158,13 @@ body {
   inset: 0;
   border-radius: inherit;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.38), rgba(255, 255, 255, 0)),
-    linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0));
+    linear-gradient(180deg, rgba(110, 231, 183, 0.08), rgba(255, 255, 255, 0)),
+    linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(255, 255, 255, 0));
   pointer-events: none;
 }
 
 .tracker-grid {
-  background-image:
-    linear-gradient(rgba(148, 163, 184, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(148, 163, 184, 0.08) 1px, transparent 1px);
-  background-position: center;
-  background-size: 32px 32px;
+  background-image: none;
 }
 
 .tracker-message {
@@ -195,8 +181,8 @@ body {
 
 .tracker-pill:hover {
   transform: translateY(-1px);
-  border-color: rgba(148, 163, 184, 0.55);
-  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.1);
+  border-color: rgba(16, 185, 129, 0.34);
+  box-shadow: 0 14px 32px rgba(2, 8, 23, 0.34);
 }
 
 .tracker-action {
@@ -208,7 +194,7 @@ body {
 
 .tracker-action:hover {
   transform: translateY(-1px);
-  box-shadow: 0 18px 32px rgba(15, 23, 42, 0.14);
+  box-shadow: 0 18px 36px rgba(16, 185, 129, 0.18);
 }
 
 @keyframes tracker-rise {

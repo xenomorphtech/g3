@@ -37,3 +37,9 @@ npm-debug.log
 
 # Local AI and workspace files.
 /.local/
+
+# Rust workspace artifacts.
+/native/target/
+/native/.local/
+/native/**/target/
+/native/g3_spacetimedb/spacetime.local.json

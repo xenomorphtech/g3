@@ -36,34 +36,8 @@ defmodule G3Web.Layouts do
   def app(assigns) do
     ~H"""
     <div class="tracker-shell min-h-screen">
-      <div class="absolute inset-x-0 top-0 h-72 bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.92),_transparent_58%),radial-gradient(circle_at_top_right,_rgba(255,210,196,0.56),_transparent_36%)]" />
-      <header class="relative border-b border-white/50 bg-white/75 backdrop-blur-xl">
-        <div class="mx-auto flex max-w-7xl items-center justify-between gap-6 px-4 py-5 sm:px-6 lg:px-8">
-          <a href="/" class="flex items-center gap-4">
-            <span class="tracker-logo">
-              <.icon name="hero-sparkles" class="size-5 text-white" />
-            </span>
-            <span>
-              <span class="block font-heading text-lg leading-none text-slate-950">Goal Studio</span>
-              <span class="mt-1 block text-xs uppercase tracking-[0.28em] text-slate-500">
-                Natural-Language Planning
-              </span>
-            </span>
-          </a>
-
-          <div class="hidden items-center gap-3 text-sm text-slate-600 md:flex">
-            <span class="rounded-full border border-white/70 bg-white/70 px-3 py-1.5 shadow-[0_12px_36px_rgba(15,23,42,0.08)]">
-              Persistent draft memory
-            </span>
-            <span class="rounded-full border border-white/70 bg-white/70 px-3 py-1.5 shadow-[0_12px_36px_rgba(15,23,42,0.08)]">
-              Gemini-backed chat orchestration
-            </span>
-          </div>
-        </div>
-      </header>
-
-      <main class="relative px-4 py-8 sm:px-6 lg:px-8">
-        <div class="mx-auto max-w-7xl space-y-6">
+      <main class="relative px-4 py-8 sm:px-6 lg:px-8 xl:px-10">
+        <div class="mx-auto w-full space-y-6 xl:px-2">
           {render_slot(@inner_block)}
         </div>
       </main>

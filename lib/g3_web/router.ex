@@ -18,6 +18,7 @@ defmodule G3Web.Router do
     pipe_through :browser
 
     live "/", TrackerLive, :index
+    live "/graph", TrackerGraphLive, :index
   end
 
   # Other scopes may use custom stacks.

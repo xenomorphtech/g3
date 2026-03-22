@@ -6,6 +6,8 @@ defmodule G3.AI.GeminiClient do
   alias G3.AI.LocalConfig
 
   @endpoint "https://generativelanguage.googleapis.com/v1beta/models"
+  @connect_timeout 15_000
+  @receive_timeout 90_000
 
   @impl true
   def respond(%{
@@ -24,7 +26,7 @@ defmodule G3.AI.GeminiClient do
       "systemInstruction" => %{"parts" => [%{"text" => system_instruction}]},
       "contents" => contents,
       "generationConfig" => %{
-        "temperature" => 0.25,
+        "temperature" => 0.1,
         "responseMimeType" => "application/json",
         "responseJsonSchema" => response_schema
       }
@@ -42,7 +44,9 @@ defmodule G3.AI.GeminiClient do
       Req.post(
         url: "#{@endpoint}/#{model}:generateContent",
         headers: [{"x-goog-api-key", api_key}],
-        json: request_body
+        json: request_body,
+        connect_options: [timeout: @connect_timeout],
+        receive_timeout: @receive_timeout
       )
 
     case response do
