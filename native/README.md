@@ -2,7 +2,7 @@
 
 This directory contains an all-Rust version of Goal Studio:
 
-- `g3_backend`: a local HTTP backend that now uses SpaceTimeDB on `192.168.2.1:3000` by default.
+- `g3_backend`: a local HTTP backend that now uses SpaceTimeDB on `192.168.2.1:3001` by default.
 - `g3_gui`: a native desktop client built with `eframe`/`egui`.
 - `g3_core`: shared tracker models, persistence, assistant logic, and session behavior.
 - `g3_spacetimedb`: the Rust SpaceTimeDB module that owns the remote schema and reducers.
@@ -32,7 +32,7 @@ The backend listens on `http://127.0.0.1:8787` by default.
 
 The Rust backend defaults to:
 
-- SpaceTimeDB host: `http://192.168.2.1:3000`
+- SpaceTimeDB host: `http://192.168.2.1:3001`
 - SpaceTimeDB database: `g3-native-stdb3`
 
 If you want the old local JSON mode instead:

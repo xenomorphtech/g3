@@ -36,7 +36,7 @@ struct Args {
     workspace_path: PathBuf,
     #[arg(long, default_value = ".local/gemini.json")]
     gemini_config: PathBuf,
-    #[arg(long, default_value = "http://192.168.2.1:3000")]
+    #[arg(long, default_value = "http://192.168.2.1:3001")]
     spacetime_url: String,
     #[arg(long, default_value = "g3-native-stdb3")]
     spacetime_database: String,
